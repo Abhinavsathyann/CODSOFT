@@ -1,0 +1,338 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Quiz Maker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        let currentQuestionIndex = 0;
+        const totalQuestions = 10;
+        let questionCount = 1;
+        let quizzes = {
+            "General Knowledge Quiz": [
+                {
+                    question: "What is the capital of France?",
+                    options: ["Berlin", "Madrid", "Paris", "Rome"],
+                    correct: 2
+                },
+                {
+                    question: "What is the largest planet in our solar system?",
+                    options: ["Earth", "Jupiter", "Mars", "Saturn"],
+                    correct: 1
+                },
+                {
+                    question: "What is the chemical symbol for water?",
+                    options: ["H2O", "O2", "CO2", "NaCl"],
+                    correct: 0
+                },
+                {
+                    question: "Who wrote 'To Kill a Mockingbird'?",
+                    options: ["Harper Lee", "Mark Twain", "Ernest Hemingway", "F. Scott Fitzgerald"],
+                    correct: 0
+                },
+                {
+                    question: "What is the speed of light?",
+                    options: ["300,000 km/s", "150,000 km/s", "450,000 km/s", "600,000 km/s"],
+                    correct: 0
+                },
+                {
+                    question: "What is the smallest prime number?",
+                    options: ["0", "1", "2", "3"],
+                    correct: 2
+                },
+                {
+                    question: "What is the capital of Japan?",
+                    options: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+                    correct: 2
+                },
+                {
+                    question: "What is the powerhouse of the cell?",
+                    options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"],
+                    correct: 1
+                },
+                {
+                    question: "What is the boiling point of water?",
+                    options: ["90°C", "100°C", "110°C", "120°C"],
+                    correct: 1
+                },
+                {
+                    question: "Who painted the Mona Lisa?",
+                    options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                    correct: 2
+                }
+            ]
+        };
+
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(view => view.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        function showLogin() {
+            showView('login-container');
+        }
+
+        function showRegister() {
+            showView('register-container');
+        }
+
+        function showHome() {
+            showView('home-container');
+        }
+
+        function showCreateQuiz() {
+            showView('create-quiz-container');
+        }
+
+        function showQuizList() {
+            showView('quiz-list-container');
+        }
+
+        function showQuiz(quizName) {
+            currentQuiz = quizzes[quizName];
+            currentQuestionIndex = 0;
+            score = 0;
+            showView('quiz-container');
+            loadQuestion();
+        }
+
+        function registerUser() {
+            const form = document.getElementById('register-form');
+            const formData = new FormData(form);
+            const userData = {};
+
+            for (let [key, value] of formData.entries()) {
+                userData[key] = value;
+            }
+
+            console.log('User registered:', userData);
+            alert('Registration successful! Please log in.');
+            showLogin();
+        }
+
+        function loginUser() {
+            const form = document.getElementById('login-form');
+            const formData = new FormData(form);
+            const loginData = {};
+
+            for (let [key, value] of formData.entries()) {
+                loginData[key] = value;
+            }
+
+            console.log('User logged in:', loginData);
+            alert('Login successful!');
+            showHome();
+        }
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const optionsContainer = document.getElementById('options-container');
+            const question = currentQuiz[currentQuestionIndex];
+
+            questionContainer.textContent = `Question ${currentQuestionIndex + 1}: ${question.question}`;
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'option-button border-2 border-blue-400 text-blue-400 py-3 px-6 rounded-full transition transform duration-200';
+                button.onclick = () => checkAnswer(button, index === question.correct);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, isCorrect) {
+            if (isCorrect) {
+                button.classList.add('bg-green-500', 'text-white');
+                score++;
+            } else {
+                button.classList.add('bg-red-500', 'text-white');
+            }
+            // Disable all buttons after an answer is selected
+            const buttons = document.querySelectorAll('.option-button');
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < currentQuiz.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4">Quiz Completed!</h2>
+                <p class="text-xl mb-6">Your score: ${score} / ${currentQuiz.length}</p>
+                <h3 class="text-xl font-bold mb-4">Correct Answers:</h3>
+                <ul class="list-disc list-inside text-left">
+                    ${currentQuiz.map((q, index) => `<li>${index + 1}. ${q.question} - ${q.options[q.correct]}</li>`).join('')}
+                </ul>
+                <button onclick="showQuizList()" class="bg-blue-500 text-white py-2 px-4 rounded-full mt-4">Back to Quiz List</button>
+            `;
+        }
+
+        function addQuestion() {
+            if (questionCount >= 10) {
+                alert("You can only add up to 10 questions.");
+                return;
+            }
+            questionCount++;
+            const questionContainer = document.getElementById('questions-container');
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'mb-6';
+            questionDiv.innerHTML = `
+                <label class="block text-gray-700 text-sm font-bold mb-2">Question ${questionCount}:</label>
+                <input type="text" name="question${questionCount}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Enter your question">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Options:</label>
+                <input type="text" name="question${questionCount}_option1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 1">
+                <input type="text" name="question${questionCount}_option2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 2">
+                <input type="text" name="question${questionCount}_option3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 3">
+                <input type="text" name="question${questionCount}_option4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Option 4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">Correct Answer:</label>
+                <select name="question${questionCount}_correct" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    <option value="0">Option 1</option>
+                    <option value="1">Option 2</option>
+                    <option value="2">Option 3</option>
+                    <option value="3">Option 4</option>
+                </select>
+            `;
+            questionContainer.appendChild(questionDiv);
+        }
+
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            const quizData = {};
+
+            for (let [key, value] of formData.entries()) {
+                const [question, field] = key.split('_');
+                if (!quizData[question]) {
+                    quizData[question] = { options: [] };
+                }
+                if (field === 'correct') {
+                    quizData[question].correct = parseInt(value);
+                } else if (field) {
+                    quizData[question].options.push(value);
+                } else {
+                    quizData[question].question = value;
+                }
+            }
+
+            console.log(quizData);
+            alert('Quiz submitted! Check the console for the quiz data.');
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div id="home-container" class="view">
+            <h1 class="text-4xl font-bold mb-8">Welcome to Online Quiz Maker</h1>
+            <div class="space-x-4">
+                <button onclick="showLogin()" class="bg-blue-500 text-white py-2 px-4 rounded">Login</button>
+                <button onclick="showRegister()" class="bg-green-500 text-white py-2 px-4 rounded">Register</button>
+                <button onclick="showCreateQuiz()" class="bg-yellow-500 text-white py-2 px-4 rounded">Create a Quiz</button>
+                <button onclick="showQuizList()" class="bg-purple-500 text-white py-2 px-4 rounded">Take a Quiz</button>
+            </div>
+        </div>
+        <div id="login-container" class="view hidden">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Login</h1>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your email">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                    <input type="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your password">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="button" onclick="loginUser()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Login</button>
+                    <a href="#" onclick="showRegister()" class="text-blue-500 hover:text-blue-700">Register</a>
+                </div>
+            </form>
+        </div>
+        <div id="register-container" class="view hidden">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Register</h1>
+            <form id="register-form">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                    <input type="text" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your name">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your email">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+                    <input type="password" name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your password">
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="button" onclick="registerUser()" class="bg-green-500 text-white py-2 px-4 rounded-full">Register</button>
+                    <button type="button" onclick="showLogin()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Login</button>
+                </div>
+            </form>
+        </div>
+        <div id="create-quiz-container" class="view hidden">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Create a New Quiz</h1>
+            <form id="quiz-form">
+                <div id="questions-container">
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Question 1:</label>
+                        <input type="text" name="question1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Enter your question">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Options:</label>
+                        <input type="text" name="question1_option1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 1">
+                        <input type="text" name="question1_option2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 2">
+                        <input type="text" name="question1_option3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 3">
+                        <input type="text" name="question1_option4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Option 4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Correct Answer:</label>
+                        <select name="question1_correct" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <option value="0">Option 1</option>
+                            <option value="1">Option 2</option>
+                            <option value="2">Option 3</option>
+                            <option value="3">Option 4</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <button type="button" onclick="addQuestion()" class="bg-green-500 text-white py-2 px-4 rounded-full">Add Question</button>
+                    <button type="button" onclick="submitQuiz()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Submit Quiz</button>
+                </div>
+            </form>
+        </div>
+        <div id="quiz-list-container" class="view hidden">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Available Quizzes</h1>
+            <div id="quiz-list" class="space-y-4">
+                <div class="bg-gray-100 p-4 rounded-lg shadow-md flex justify-between items-center">
+                    <span class="text-xl font-semibold">General Knowledge Quiz</span>
+                    <button onclick="showQuiz('General Knowledge Quiz')" class="bg-blue-500 text-white py-2 px-4 rounded-full">Take Quiz</button>
+                </div>
+                <!-- Add more quizzes here -->
+            </div>
+        </div>
+        <div id="quiz-container" class="view hidden">
+            <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Quiz Title</h1>
+            <div class="mb-8">
+                <p id="question-container" class="text-xl mb-6 text-gray-700"></p>
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-gray-300 text-gray-700 py-2 px-4 rounded-full cursor-not-allowed" disabled>Previous</button>
+                <button onclick="nextQuestion()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Next</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

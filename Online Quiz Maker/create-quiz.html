@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+    <script>
+        let currentQuestionIndex = 0;
+        const totalQuestions = 10;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            questionContainer.innerHTML = `
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Question ${currentQuestionIndex + 1}:</label>
+                    <input type="text" name="question${currentQuestionIndex + 1}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Enter your question">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Options:</label>
+                    <input type="text" name="question${currentQuestionIndex + 1}_option1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 1">
+                    <input type="text" name="question${currentQuestionIndex + 1}_option2" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 2">
+                    <input type="text" name="question${currentQuestionIndex + 1}_option3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2" placeholder="Option 3">
+                    <input type="text" name="question${currentQuestionIndex + 1}_option4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4" placeholder="Option 4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Correct Answer:</label>
+                    <select name="question${currentQuestionIndex + 1}_correct" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                        <option value="0">Option 1</option>
+                        <option value="1">Option 2</option>
+                        <option value="2">Option 3</option>
+                        <option value="3">Option 4</option>
+                    </select>
+                </div>
+            `;
+        }
+
+        function nextQuestion() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            const quizData = {};
+
+            for (let [key, value] of formData.entries()) {
+                const [question, field] = key.split('_');
+                if (!quizData[question]) {
+                    quizData[question] = { options: [] };
+                }
+                if (field === 'correct') {
+                    quizData[question].correct = parseInt(value);
+                } else if (field) {
+                    quizData[question].options.push(value);
+                } else {
+                    quizData[question].question = value;
+                }
+            }
+
+            console.log(quizData);
+
+            if (currentQuestionIndex < totalQuestions - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                alert('Quiz submitted! Check the console for the quiz data.');
+            }
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Create a New Quiz</h1>
+        <form id="quiz-form">
+            <div id="question-container"></div>
+            <div class="flex justify-between items-center">
+                <button type="button" onclick="nextQuestion()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Next Question</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take a Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .option-button:active {
+            transform: scale(0.95);
+        }
+        .option-button:hover {
+            background-color: #ebf8ff;
+        }
+    </style>
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Berlin", "Madrid", "Paris", "Rome"],
+                correct: 2
+            },
+            {
+                question: "What is the largest planet in our solar system?",
+                options: ["Earth", "Jupiter", "Mars", "Saturn"],
+                correct: 1
+            },
+            {
+                question: "What is the chemical symbol for water?",
+                options: ["H2O", "O2", "CO2", "NaCl"],
+                correct: 0
+            },
+            {
+                question: "Who wrote 'To Kill a Mockingbird'?",
+                options: ["Harper Lee", "Mark Twain", "Ernest Hemingway", "F. Scott Fitzgerald"],
+                correct: 0
+            },
+            {
+                question: "What is the speed of light?",
+                options: ["300,000 km/s", "150,000 km/s", "450,000 km/s", "600,000 km/s"],
+                correct: 0
+            },
+            {
+                question: "What is the smallest prime number?",
+                options: ["0", "1", "2", "3"],
+                correct: 2
+            },
+            {
+                question: "What is the capital of Japan?",
+                options: ["Seoul", "Beijing", "Tokyo", "Bangkok"],
+                correct: 2
+            },
+            {
+                question: "What is the powerhouse of the cell?",
+                options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi apparatus"],
+                correct: 1
+            },
+            {
+                question: "What is the boiling point of water?",
+                options: ["90°C", "100°C", "110°C", "120°C"],
+                correct: 1
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById('question-container');
+            const optionsContainer = document.getElementById('options-container');
+            const question = questions[currentQuestionIndex];
+
+            questionContainer.textContent = `Question ${currentQuestionIndex + 1}: ${question.question}`;
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'option-button border-2 border-blue-400 text-blue-400 py-3 px-6 rounded-full transition transform duration-200';
+                button.onclick = () => checkAnswer(button, index === question.correct);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function checkAnswer(button, isCorrect) {
+            if (isCorrect) {
+                button.classList.add('bg-green-500', 'text-white');
+                score++;
+            } else {
+                button.classList.add('bg-red-500', 'text-white');
+            }
+            // Disable all buttons after an answer is selected
+            const buttons = document.querySelectorAll('.option-button');
+            buttons.forEach(btn => btn.disabled = true);
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = `
+                <h2 class="text-2xl font-bold mb-4">Quiz Completed!</h2>
+                <p class="text-xl mb-6">Your score: ${score} / ${questions.length}</p>
+                <h3 class="text-xl font-bold mb-4">Correct Answers:</h3>
+                <ul class="list-disc list-inside text-left">
+                    ${questions.map((q, index) => `<li>${index + 1}. ${q.question} - ${q.options[q.correct]}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        window.onload = loadQuestion;
+    </script>
+</head>
+<body class="bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Quiz Title</h1>
+        <div id="quiz-container">
+            <div class="mb-8">
+                <p id="question-container" class="text-xl mb-6 text-gray-700"></p>
+                <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-gray-300 text-gray-700 py-2 px-4 rounded-full cursor-not-allowed" disabled>Previous</button>
+                <button onclick="nextQuestion()" class="bg-blue-500 text-white py-2 px-4 rounded-full">Next</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
