@@ -29,5 +29,14 @@ Leaderboard: Display top scores for competitive learning.
 Quiz Categories: Allow quizzes to be tagged with categories for easier browsing.
 Detailed Analytics: Provide users with insights into their quiz performance.
 
+## Font Resources
+
+This project includes the following font resource:
+
+- [Google Fonts - Roboto](https://fonts.google.com/specimen/Roboto) - integrated using the `@import` method:
+  ```css
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+
 ## License
 This project is licensed under the MIT License.
