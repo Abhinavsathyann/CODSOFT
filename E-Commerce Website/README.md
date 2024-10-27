@@ -18,3 +18,12 @@ Font Awesome: Icons for navigation and action buttons.
 Search Items: Type in the search bar to filter items dynamically.
 View Details: Explore item details, discounts, and savings for each item on the "Today Deals" section.
 Buy Item: Click on the "Buy" button to open the payment details modal.
+
+## Dependencies and External Resources
+
+This project uses the following external resources:
+
+- [Font Awesome](https://cdnjs.com/libraries/font-awesome) (Version 5.15.3) - for icons. CDN link used: `https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css`
+- [Google Fonts - Roboto](https://fonts.google.com/specimen/Roboto) - for fonts. CDN link used: `https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap`
+
+These resources are linked directly from trusted CDNs to enhance loading speed and reliability.
