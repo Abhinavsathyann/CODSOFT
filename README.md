@@ -1,4 +1,4 @@
-# Abhinav's Project Portfolio
+# CODESOFT
 
 Welcome to my GitHub repository showcasing a diverse set of projects, each demonstrating different aspects of my skills and interests in web development, software engineering, and UI/UX design. This repository serves as a hub for my work, ranging from a personal portfolio website to interactive tools like a Quiz Maker and Calculator, as well as a functional E-Commerce website.
 
